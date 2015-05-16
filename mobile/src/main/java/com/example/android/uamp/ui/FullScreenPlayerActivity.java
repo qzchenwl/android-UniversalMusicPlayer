@@ -208,6 +208,22 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
 
         mMediaBrowser = new MediaBrowser(this,
             new ComponentName(this, MusicService.class), mConnectionCallback, null);
+
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    LogHelper.e(TAG, "Log from background thread " + System.currentTimeMillis());
+                    LogHelper.d(TAG, "Log from background thread " + System.currentTimeMillis());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        th.start();
     }
 
     private void connectToSession(MediaSession.Token token) {
@@ -289,6 +305,8 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     }
 
     private void fetchImageAsync(MediaDescription description) {
+        if (description.getIconUri() == null) return;
+
         String artUrl = description.getIconUri().toString();
         mCurrentArtUrl = artUrl;
         AlbumArtCache cache = AlbumArtCache.getInstance();

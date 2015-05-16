@@ -143,6 +143,8 @@ public class PlaybackControlsFragment extends Fragment {
 
         mTitle.setText(metadata.getDescription().getTitle());
         mSubtitle.setText(metadata.getDescription().getSubtitle());
+
+        if (metadata.getDescription().getIconUri() == null) return;
         String artUrl = metadata.getDescription().getIconUri().toString();
         if (!TextUtils.equals(artUrl, mArtUrl)) {
             mArtUrl = artUrl;

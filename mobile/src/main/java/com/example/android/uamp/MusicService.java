@@ -188,7 +188,7 @@ public class MusicService extends MediaBrowserService implements Playback.Callba
         LogHelper.d(TAG, "onCreate");
 
         mPlayingQueue = new ArrayList<>();
-        mMusicProvider = new MusicProvider();
+        mMusicProvider = new MusicProvider(this);
         mPackageValidator = new PackageValidator(this);
 
         // Start a new MediaSession
