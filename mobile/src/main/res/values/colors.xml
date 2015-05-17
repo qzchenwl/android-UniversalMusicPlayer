@@ -24,4 +24,5 @@
     <color name="drawer_item_tint_color">#ff333333</color>
     <color name="fullscreen_secondary_line_color">#E5CCCCCC</color>
     <color name="fullscreen_line_color">#E5FFFFFF</color>
+    <color name="white">#FF000000</color>
 </resources>

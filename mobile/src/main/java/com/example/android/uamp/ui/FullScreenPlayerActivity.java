@@ -63,14 +63,10 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     private TextView mStart;
     private TextView mEnd;
     private SeekBar mSeekbar;
-    private TextView mLine1;
-    private TextView mLine2;
-    private TextView mLine3;
     private ProgressBar mLoading;
     private View mControllers;
     private Drawable mPauseDrawable;
     private Drawable mPlayDrawable;
-    private ImageView mBackgroundImage;
 
     private String mCurrentArtUrl;
     private Handler mHandler = new Handler();
@@ -127,7 +123,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        mBackgroundImage = (ImageView) findViewById(R.id.background_image);
         mPauseDrawable = getDrawable(R.drawable.ic_pause_white_48dp);
         mPlayDrawable = getDrawable(R.drawable.ic_play_arrow_white_48dp);
         mPlayPause = (ImageView) findViewById(R.id.imageView1);
@@ -136,9 +131,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         mStart = (TextView) findViewById(R.id.startText);
         mEnd = (TextView) findViewById(R.id.endText);
         mSeekbar = (SeekBar) findViewById(R.id.seekBar1);
-        mLine1 = (TextView) findViewById(R.id.line1);
-        mLine2 = (TextView) findViewById(R.id.line2);
-        mLine3 = (TextView) findViewById(R.id.line3);
         mLoading = (ProgressBar) findViewById(R.id.progressBar1);
         mControllers = findViewById(R.id.controllers);
 
@@ -304,42 +296,11 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         mExecutorService.shutdown();
     }
 
-    private void fetchImageAsync(MediaDescription description) {
-        if (description.getIconUri() == null) return;
-
-        String artUrl = description.getIconUri().toString();
-        mCurrentArtUrl = artUrl;
-        AlbumArtCache cache = AlbumArtCache.getInstance();
-        Bitmap art = cache.getBigImage(artUrl);
-        if (art == null) {
-            art = description.getIconBitmap();
-        }
-        if (art != null) {
-            // if we have the art cached or from the MediaDescription, use it:
-            mBackgroundImage.setImageBitmap(art);
-        } else {
-            // otherwise, fetch a high res version and update:
-            cache.fetch(artUrl, new AlbumArtCache.FetchListener() {
-                @Override
-                public void onFetched(String artUrl, Bitmap bitmap, Bitmap icon) {
-                    // sanity check, in case a new fetch request has been done while
-                    // the previous hasn't yet returned:
-                    if (artUrl.equals(mCurrentArtUrl)) {
-                        mBackgroundImage.setImageBitmap(bitmap);
-                    }
-                }
-            });
-        }
-    }
-
     private void updateMediaDescription(MediaDescription description) {
         if (description == null) {
             return;
         }
         LogHelper.d(TAG, "updateMediaDescription called ");
-        mLine1.setText(description.getTitle());
-        mLine2.setText(description.getSubtitle());
-        fetchImageAsync(description);
     }
 
     private void updateDuration(MediaMetadata metadata) {
@@ -364,7 +325,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
             line3Text = getResources()
                     .getString(R.string.casting_to_device, castName);
         }
-        mLine3.setText(line3Text);
 
         switch (state.getState()) {
             case PlaybackState.STATE_PLAYING:
@@ -391,7 +351,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
             case PlaybackState.STATE_BUFFERING:
                 mPlayPause.setVisibility(INVISIBLE);
                 mLoading.setVisibility(VISIBLE);
-                mLine3.setText(R.string.loading);
                 stopSeekbarUpdate();
                 break;
             default:
